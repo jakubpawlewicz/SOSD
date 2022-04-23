@@ -28,3 +28,9 @@
 [submodule "competitors/analysis-rmi"]
 	path = competitors/analysis-rmi
 	url = https://github.com/alhuan/analysis-rmi.git
+[submodule "ultimatepp"]
+	path = ultimatepp
+	url = https://github.com/ultimatepp/ultimatepp.git
+[submodule "fastmap"]
+	path = fastmap
+	url = git@github.com:jakubpawlewicz/fastmap.git
