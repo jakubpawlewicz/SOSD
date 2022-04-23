@@ -7,6 +7,7 @@
 #include "benchmarks/benchmark_btree.h"
 #include "benchmarks/benchmark_cht.h"
 #include "benchmarks/benchmark_fast64.h"
+#include "benchmarks/benchmark_fastmap.h"
 #include "benchmarks/benchmark_fst.h"
 #include "benchmarks/benchmark_ibtree.h"
 #include "benchmarks/benchmark_pgm.h"
@@ -57,6 +58,7 @@ void execute_32_bit(Benchmark benchmark, bool pareto, bool only_mode,
   check_only("BTree", benchmark_32_btree(benchmark, pareto));
   check_only("IBTree", benchmark_32_ibtree(benchmark, pareto));
   check_only("FAST", benchmark_32_fast(benchmark, pareto));
+  check_only("FastMapBucket", benchmark_32_fastmap_bucket(benchmark, pareto));
   check_only("ALEX", benchmark_32_alex(benchmark, pareto));
   check_only("RMI_CPP", benchmark_32_rmi_cpp(benchmark, pareto));
 #ifndef __APPLE__
@@ -87,6 +89,7 @@ void execute_64_bit(Benchmark benchmark, bool pareto, bool only_mode,
   check_only("BTree", benchmark_64_btree(benchmark, pareto));
   check_only("IBTree", benchmark_64_ibtree(benchmark, pareto));
   check_only("FAST", benchmark_64_fast(benchmark, pareto));
+  check_only("FastMapBucket", benchmark_64_fastmap_bucket(benchmark, pareto));
   check_only("ALEX", benchmark_64_alex(benchmark, pareto));
   check_only("RMI_CPP", benchmark_64_rmi_cpp(benchmark, pareto));
 #ifndef __APPLE__
