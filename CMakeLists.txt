@@ -51,6 +51,11 @@ add_custom_target(
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/fast64/
 )
 
+add_custom_target(
+        FastMap
+        COMMAND umk ${CMAKE_SOURCE_DIR}/fastmap,${CMAKE_SOURCE_DIR}/ultimatepp/uppsrc FastMap ${CMAKE_SOURCE_DIR}/libfastmap/GCC.bm -r +MAKE_LIB,SHARED ${CMAKE_SOURCE_DIR}/libfastmap
+)
+
 if (${LINUX})
     add_custom_target(
             libwh
@@ -67,8 +72,11 @@ target_include_directories(benchmark
         PRIVATE "competitors/rs/include"
         PRIVATE "competitors/stx-btree-0.9/include"
         PRIVATE "competitors/ts/include"
-        PRIVATE "fast64")
+        PRIVATE "fast64"
+        PRIVATE "ultimatepp/uppsrc"
+        PRIVATE "fastmap/FastMap")
 add_dependencies(benchmark libfast64)
+add_dependencies(benchmark FastMap)
 
 if (${LINUX})
     target_include_directories(benchmark PRIVATE "wormhole")
@@ -78,6 +86,8 @@ endif ()
 
 target_link_libraries(benchmark
         PRIVATE ${CMAKE_SOURCE_DIR}/fast64/target/release/libfast64.a
+        PRIVATE ${CMAKE_SOURCE_DIR}/libfastmap/FastMap.a
+        PRIVATE z
         PRIVATE tsl::robin_map
         PRIVATE Threads::Threads dtl
         PRIVATE dl)
