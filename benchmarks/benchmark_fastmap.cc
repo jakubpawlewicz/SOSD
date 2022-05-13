@@ -28,7 +28,7 @@ template <class T, template <typename> typename Searcher>
 void benchmark_fastmap_bucket(sosd::Benchmark<T, Searcher>& benchmark, bool pareto) {
   benchmark_run_seq<FastMapBucket>(benchmark, std::integer_sequence<int, 1>{});
   if (pareto)
-    benchmark_run_seq<FastMapBucket>(benchmark, std::integer_sequence<int, 2, 4, 8, 16, 32, 64, 32, 256, 1024, 4096>{});
+    benchmark_run_seq<FastMapBucket>(benchmark, std::integer_sequence<int, 2, 4, 8, 16, 32, 64, 128, 256, 1024, 4096>{});
 }
 
 template <template <typename> typename Searcher>
