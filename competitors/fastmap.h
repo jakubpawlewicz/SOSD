@@ -92,7 +92,7 @@ class FastMapBucket : public FastMapBase<FastMap::BucketPile, KeyType, size_scal
 
   bool applicable(bool _unique, const std::string& data_filename) {
     params_.lambda = (double)size_scale;
-    return _unique;
+    return true;
   }
 };
 
@@ -122,7 +122,7 @@ class FastMapPGMBucket : public FastMapBase<FastMap::LinApxOptBucketPile, KeyTyp
     params_.avg_reads = 1.0;
     params_.block_size = size_scale / 100;
     params_.lambda = double(size_scale % 100);
-    return _unique;
+    return true;
   }
 };
 
