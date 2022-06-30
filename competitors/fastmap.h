@@ -25,6 +25,10 @@ class FastMapBase : public Competitor {
   }
 
   uint64_t Build(const Upp::Vector<KeyTypeSigned>& keys) {
+    last_idx_ = keys.size() - 1;
+    while (last_idx_ > 0 && keys[last_idx_ - 1] == keys[last_idx_])
+      last_idx_--;
+    last_key_ = keys[last_idx_];
     return util::timing([&] {
       idx_.Create(keys, params_);
     });
@@ -34,8 +38,11 @@ class FastMapBase : public Competitor {
     return Build(GetKeys(data));
   }
 
-  SearchBound EqualityLookup(const KeyType lookup_key) const {
-    FastMap::Intvl intvl = idx_->FindIntvl((KeyTypeSigned)AdjustKey(lookup_key));
+  SearchBound EqualityLookup(const KeyType _lookup_key) const {
+    KeyTypeSigned lookup_key = (KeyTypeSigned) AdjustKey(_lookup_key);
+    if (lookup_key == last_key_)
+      return {last_idx_, last_idx_ + 1};
+    FastMap::Intvl intvl = idx_->FindIntvl(lookup_key);
     return {(size_t)intvl.a, (size_t)intvl.b};
   }
 
@@ -46,6 +53,8 @@ class FastMapBase : public Competitor {
  protected:
   FastMap::Params params_;
   Upp::One<Index<KeyTypeSigned>> idx_;
+  size_t last_idx_;
+  KeyTypeSigned last_key_;
 };
 
 template <template <class> class Index, class KeyType, int size_scale>
@@ -62,6 +71,8 @@ class FastMapApxBase : public FastMapBase<Index, KeyType, size_scale> {
 
   SearchBound EqualityLookup(const KeyType _lookup_key) const {
     KeyTypeSigned lookup_key = (KeyTypeSigned)AdjustKey(_lookup_key);
+    if (lookup_key == B::last_key_)
+      return {B::last_idx_, B::last_idx_ + 1};
     typename Index<KeyTypeSigned>::State state;
     FastMap::Intvl intvl = idx_->TryFindFirst(lookup_key, state);
     for(;;) {
