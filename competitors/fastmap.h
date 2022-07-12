@@ -43,6 +43,8 @@ class FastMapBase : public Competitor {
     if (lookup_key == last_key_)
       return {last_idx_, last_idx_ + 1};
     FastMap::Intvl intvl = idx_->FindIntvl(lookup_key);
+    intvl.a = Upp::max(0, intvl.a);
+    intvl.b = Upp::min((int)last_idx_, intvl.b);
     return {(size_t)intvl.a, (size_t)intvl.b};
   }
 
