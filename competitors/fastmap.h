@@ -102,9 +102,13 @@ class FastMapApxBase : public FastMapBase<Index, KeyType, size_scale> {
       }
       intvl.a = Upp::max(0, intvl.a);
       auto range = typename B::Range(data_, intvl.a, intvl.b - intvl.a);
-      if (lookup_key < range[0])
+      if (_lookup_key < (*data_)[intvl.a].key ||
+         (_lookup_key == (*data_)[intvl.a].key &&
+          intvl.a > 0 && _lookup_key == (*data_)[intvl.a - 1].key))
         intvl = idx_->TryFindNext(lookup_key, intvl, range, intvl.a, state);
-      else if (lookup_key > range[range.GetCount() - 1])
+      else if (_lookup_key > (*data_)[intvl.b - 1].key ||
+              (_lookup_key == (*data_)[intvl.b - 1].key &&
+               intvl.b < (int) data_->size() && _lookup_key == (*data_)[intvl.b].key))
         intvl = idx_->TryFindNext(lookup_key, intvl, range, intvl.b, state);
       else
         return {(size_t)intvl.a, (size_t)intvl.b};
