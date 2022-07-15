@@ -102,14 +102,21 @@ class FastMapApxBase : public FastMapBase<Index, KeyType, size_scale> {
       }
       intvl.a = Upp::max(0, intvl.a);
       auto range = typename B::Range(data_, intvl.a, intvl.b - intvl.a);
-      if (_lookup_key < (*data_)[intvl.a].key ||
-         (_lookup_key == (*data_)[intvl.a].key &&
-          intvl.a > 0 && _lookup_key == (*data_)[intvl.a - 1].key))
+      if (_lookup_key < (*data_)[intvl.a].key)
         intvl = idx_->TryFindNext(lookup_key, intvl, range, intvl.a, state);
-      else if (_lookup_key > (*data_)[intvl.b - 1].key ||
-              (_lookup_key == (*data_)[intvl.b - 1].key &&
-               intvl.b < (int) data_->size() && _lookup_key == (*data_)[intvl.b].key))
+      else if (_lookup_key == (*data_)[intvl.a].key) {
+        while (intvl.a > 0 && _lookup_key == (*data_)[intvl.a - 1].key)
+          intvl.a--;
+        return {(size_t)intvl.a, (size_t)intvl.a};
+      }
+      else if (_lookup_key > (*data_)[intvl.b - 1].key)
         intvl = idx_->TryFindNext(lookup_key, intvl, range, intvl.b, state);
+      else if (_lookup_key == (*data_)[intvl.b - 1].key) {
+        while (intvl.b < (int) data_->size() && _lookup_key == (*data_)[intvl.b].key)
+          intvl.b++;
+        intvl.b--;
+        return {(size_t)intvl.b, (size_t)intvl.b};
+      }
       else
         return {(size_t)intvl.a, (size_t)intvl.b};
     }
