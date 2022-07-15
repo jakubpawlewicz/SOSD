@@ -4,8 +4,8 @@
 #include "base.h"
 #include "FastMap.h"
 
-template <template <class> class Index, class KeyType, int size_scale>
-class FastMapBase : public Competitor {
+template <class KeyType>
+class FastMapUtils {
  protected:
   static KeyType AdjustKey(KeyType key)
   {
@@ -24,6 +24,24 @@ class FastMapBase : public Competitor {
     return keys;
   }
 
+  struct Range {
+    const std::vector<KeyValue<KeyType>> *data_;
+    int begin_;
+    int count_;
+    int GetCount() const { return count_; }
+    KeyTypeSigned operator[](int i) const { return AdjustKey((*data_)[begin_ + i].key); }
+    Range(const std::vector<KeyValue<KeyType>> *data, int begin, int count)
+      : data_(data), begin_(begin), count_(count) {}
+  };
+};
+
+template <template <class> class Index, class KeyType, int size_scale>
+class FastMapBase : public FastMapUtils<KeyType>, public Competitor {
+  typedef FastMapUtils<KeyType> B;
+ protected:
+  typedef typename B::KeyTypeSigned KeyTypeSigned;
+  using B::AdjustKey;
+
   uint64_t Build(const Upp::Vector<KeyTypeSigned>& keys) {
     last_idx_ = keys.size() - 1;
     while (last_idx_ > 0 && keys[last_idx_ - 1] == keys[last_idx_])
@@ -35,7 +53,7 @@ class FastMapBase : public Competitor {
   }
  public:
   uint64_t Build(const std::vector<KeyValue<KeyType>>& data) {
-    return Build(GetKeys(data));
+    return Build(B::GetKeys(data));
   }
 
   SearchBound EqualityLookup(const KeyType _lookup_key) const {
@@ -67,8 +85,8 @@ class FastMapApxBase : public FastMapBase<Index, KeyType, size_scale> {
   typedef typename B::KeyTypeSigned KeyTypeSigned;
  public:
   uint64_t Build(const std::vector<KeyValue<KeyType>>& data) {
-    keys_ = B::GetKeys(data);
-    return B::Build(keys_);
+    data_ = &data;
+    return B::Build(data);
   }
 
   SearchBound EqualityLookup(const KeyType _lookup_key) const {
@@ -78,12 +96,12 @@ class FastMapApxBase : public FastMapBase<Index, KeyType, size_scale> {
     typename Index<KeyTypeSigned>::State state;
     FastMap::Intvl intvl = idx_->TryFindFirst(lookup_key, state);
     for(;;) {
-      if (intvl.b > keys_.GetCount()) {
-        intvl.a += keys_.GetCount() - intvl.b;
-        intvl.b = keys_.GetCount();
+      if (intvl.b > (int) data_->size()) {
+        intvl.a += (int) data_->size() - intvl.b;
+        intvl.b = (int) data_->size();
       }
       intvl.a = Upp::max(0, intvl.a);
-      auto range = Upp::SubRange(keys_, intvl.a, intvl.b - intvl.a);
+      auto range = typename B::Range(data_, intvl.a, intvl.b - intvl.a);
       if (lookup_key < range[0])
         intvl = idx_->TryFindNext(lookup_key, intvl, range, intvl.a, state);
       else if (lookup_key > range[range.GetCount() - 1])
@@ -93,7 +111,7 @@ class FastMapApxBase : public FastMapBase<Index, KeyType, size_scale> {
     }
   }
  protected:
-  Upp::Vector<KeyTypeSigned> keys_;
+  const std::vector<KeyValue<KeyType>> *data_;
 };
 
 template <class KeyType, int size_scale>
