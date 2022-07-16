@@ -111,12 +111,6 @@ class FastMapApxBase : public FastMapBase<Index, KeyType, size_scale> {
       }
       else if (_lookup_key > (*data_)[intvl.b - 1].key)
         intvl = idx_->TryFindNext(lookup_key, intvl, range, intvl.b, state);
-      else if (_lookup_key == (*data_)[intvl.b - 1].key) {
-        while (intvl.b < (int) data_->size() && _lookup_key == (*data_)[intvl.b].key)
-          intvl.b++;
-        intvl.b--;
-        return {(size_t)intvl.b, (size_t)intvl.b};
-      }
       else
         return {(size_t)intvl.a, (size_t)intvl.b};
     }
