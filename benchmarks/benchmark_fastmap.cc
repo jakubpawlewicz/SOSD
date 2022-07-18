@@ -48,7 +48,7 @@ void benchmark_fastmap_pgmfull(sosd::Benchmark<T, Searcher>& benchmark, bool par
   auto f = [](auto x, auto y) { return 100 * x + y; };
   if (pareto)
     benchmark_run_two_seqs<FastMapPGMFull>(benchmark, f,
-      std::integer_sequence<int, 8, 16, 32, 64, 128, 256, 1024>{},
+      std::integer_sequence<int, 8, 16, 32, 64, 128, 256, 1024, 4096>{},
       std::integer_sequence<int, 6, 8, 10, 12, 16>{});
   else
     benchmark_run_two_seqs<FastMapPGMFull>(benchmark, f,
@@ -73,7 +73,7 @@ void benchmark_fastmap_pgmbucket(sosd::Benchmark<T, Searcher>& benchmark, bool p
   auto f = [](auto x, auto y) { return 100 * x + y; };
   if (pareto)
     benchmark_run_two_seqs<FastMapPGMBucket>(benchmark, f,
-      std::integer_sequence<int, 8, 16, 32, 64, 128, 256, 1024>{},
+      std::integer_sequence<int, 8, 16, 32, 64, 128, 256, 1024, 4096>{},
       std::integer_sequence<int, 1, 2, 4>{});
   else
     benchmark_run_two_seqs<FastMapPGMBucket>(benchmark, f,
