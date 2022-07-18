@@ -48,7 +48,16 @@ class FastMapBase : public FastMapUtils<KeyType>, public Competitor {
       last_idx_--;
     last_key_ = keys[last_idx_];
     return util::timing([&] {
-      idx_.Create(keys, params_);
+      Upp::String fn(data_filename_);
+      fn = Upp::GetHomeDirectory() + "/src/SOSD/fastmap_data/" + Upp::GetFileName(fn);
+      fn << '-' << name() << '-' << Upp::IntStr(size_scale) << ".hints";
+      if (Upp::FileExists(fn))
+      {
+        Upp::FileIn in(fn);
+        idx_.Create(keys, in);
+      }
+      else
+        idx_.Create(keys, params_);
     });
   }
  public:
@@ -69,8 +78,10 @@ class FastMapBase : public FastMapUtils<KeyType>, public Competitor {
   std::size_t size() const { return idx_->GetMemSize(); }
 
   int variant() const { return size_scale; }
+  virtual std::string name() const = 0;
 
  protected:
+  std::string data_filename_;
   FastMap::Params params_;
   Upp::One<Index<KeyTypeSigned>> idx_;
   size_t last_idx_;
@@ -127,6 +138,7 @@ class FastMapBucket : public FastMapBase<FastMap::BucketPile, KeyType, size_scal
   std::string name() const { return "FastMapBucket"; }
 
   bool applicable(bool _unique, const std::string& data_filename) {
+    B::data_filename_ = data_filename;
     params_.lambda = (double)size_scale;
     return true;
   }
@@ -140,6 +152,7 @@ class FastMapPGMFull : public FastMapBase<FastMap::LinApxOptPile, KeyType, size_
   std::string name() const { return "FastMapPGMFull"; }
 
   bool applicable(bool _unique, const std::string& data_filename) {
+    B::data_filename_ = data_filename;
     params_.avg_reads = 1.0;
     params_.block_size = size_scale / 100;
     params_.deep_block_size = size_scale % 100;
@@ -155,6 +168,7 @@ class FastMapPGMBucket : public FastMapBase<FastMap::LinApxOptBucketPile, KeyTyp
   std::string name() const { return "FastMapPGMBucket"; }
 
   bool applicable(bool _unique, const std::string& data_filename) {
+    B::data_filename_ = data_filename;
     params_.avg_reads = 1.0;
     params_.block_size = size_scale / 100;
     params_.lambda = double(size_scale % 100);
@@ -170,6 +184,7 @@ class FastMapApx : public FastMapApxBase<FastMap::LinApxOptBucketPile, KeyType, 
   std::string name() const { return "FastMapApx"; }
 
   bool applicable(bool _unique, const std::string& data_filename) {
+    B::data_filename_ = data_filename;
     params_.lambda = 4.0;
     params_.avg_reads = double(size_scale % 1000) * 0.1;
     params_.block_size = size_scale / 1000;
