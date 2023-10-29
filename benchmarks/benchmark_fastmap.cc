@@ -52,9 +52,19 @@ constexpr auto id = [](auto x) { return x; };
 
 template <class T, template <typename> typename Searcher>
 void benchmark_fastmap_bucket(sosd::Benchmark<T, Searcher>& benchmark, bool pareto) {
-  benchmark_run_help<FastMapBucket>(benchmark, id, std::integer_sequence<int, 1>{});
+  auto f = [](auto x, auto y, auto z, auto u) { return 10*(100*(100 * x + y) + z) + u; };
   if (pareto)
-    benchmark_run_help<FastMapBucket>(benchmark, id, std::integer_sequence<int, 2, 4, 8, 16, 32, 64, 128, 256, 1024, 4096>{});
+    benchmark_run_help<FastMapBucket>(benchmark, f,
+      std::integer_sequence<int, 1, 2, 4, 8, 16>{},
+      std::integer_sequence<int, 0, 5, 10, 20, 35, 50, 70, 90>{},
+      std::integer_sequence<int, 16, 32>{},
+      std::integer_sequence<int, 2, 4>{});
+  else
+    benchmark_run_help<FastMapBucket>(benchmark, f,
+      std::integer_sequence<int, 1>{},
+      std::integer_sequence<int, 0>{},
+      std::integer_sequence<int, 16>{},
+      std::integer_sequence<int, 2>{});
 }
 
 template <template <typename> typename Searcher>
@@ -96,15 +106,22 @@ void benchmark_64_fastmap_pgmfull(sosd::Benchmark<uint64_t, Searcher>& benchmark
 
 template <class T, template <typename> typename Searcher>
 void benchmark_fastmap_pgmbucket(sosd::Benchmark<T, Searcher>& benchmark, bool pareto) {
-  constexpr auto f = [](auto x, auto y) { return 100 * x + y; };
+  auto f = [](auto x, auto y, auto z, auto u, auto v)
+  { return 10 * (100 * (100 * (10 * x + y) + z) + u) + v; };
   if (pareto)
     benchmark_run_help<FastMapPGMBucket>(benchmark, f,
-      std::integer_sequence<int, 8, 16, 32, 64, 128, 256, 1024, 4096>{},
-      std::integer_sequence<int, 1, 2, 4>{});
+      std::integer_sequence<int, 4, 16, 64, 256>{},
+      std::integer_sequence<int, 1, 4>{},
+      std::integer_sequence<int, 0, 10, 20, 30, 50, 90>{},
+      std::integer_sequence<int, 16, 32>{},
+      std::integer_sequence<int, 2, 4>{});
   else
     benchmark_run_help<FastMapPGMBucket>(benchmark, f,
-      std::integer_sequence<int, 34>{},
-      std::integer_sequence<int, 1>{});
+      std::integer_sequence<int, 32>{},
+      std::integer_sequence<int, 1>{},
+      std::integer_sequence<int, 0>{},
+      std::integer_sequence<int, 16>{},
+      std::integer_sequence<int, 2>{});
 }
 
 template <template <typename> typename Searcher>

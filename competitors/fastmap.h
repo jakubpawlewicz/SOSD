@@ -139,7 +139,13 @@ class FastMapBucket : public FastMapBase<FastMap::BucketPile, KeyType, size_scal
 
   bool applicable(bool _unique, const std::string& data_filename) {
     B::data_filename_ = data_filename;
-    params_.lambda = (double)size_scale;
+    int s = size_scale;
+    params_.decay = 1.0 / (double) (s % 10);
+    s /= 10;
+    params_.ends_to_accept = s % 100;
+    s /= 100;
+    params_.eps = double(s % 100) / 10.0;
+    params_.lambda = (double)(s / 100);
     return true;
   }
 };
@@ -169,9 +175,16 @@ class FastMapPGMBucket : public FastMapBase<FastMap::LinApxOptBucketPile, KeyTyp
 
   bool applicable(bool _unique, const std::string& data_filename) {
     B::data_filename_ = data_filename;
+    int s = size_scale;
     params_.avg_reads = 1.0;
-    params_.block_size = size_scale / 100;
-    params_.lambda = double(size_scale % 100);
+    params_.decay = 1.0 / (double) (size_scale % 10);
+    s /= 10;
+    params_.ends_to_accept = s % 100;
+    s /= 100;
+    params_.eps = double(s % 100) / 10.0;
+    s /= 100;
+    params_.lambda = double(s % 10);
+    params_.block_size = s / 10;
     return true;
   }
 };
