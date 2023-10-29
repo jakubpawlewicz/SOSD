@@ -54,18 +54,16 @@ constexpr auto id = [](auto x) { return x; };
 
 template <class T, template <typename> typename Searcher>
 void benchmark_fastmap_bucket(sosd::Benchmark<T, Searcher>& benchmark, bool pareto) {
-  auto f = [](auto x, auto y, auto z, auto u) { return 10*(100*(100 * x + y) + z) + u; };
+  auto f = [](auto x, auto y, auto z) { return 10*(1000 * x + y) + z; };
   if constexpr (!simple_params)
     if (pareto)
       return benchmark_run_help<FastMapBucket>(benchmark, f,
-        std::integer_sequence<int, 1, 2, 4, 8, 16>{},
-        std::integer_sequence<int, 0, 5, 10, 20, 35, 50, 70, 90>{},
-        std::integer_sequence<int, 16, 32>{},
-        std::integer_sequence<int, 2, 4>{});
+        std::integer_sequence<int, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192>{},
+        std::integer_sequence<int, 0, 5, 10, 20, 35, 50, 90, 150, 310>{},
+        std::integer_sequence<int, 2, 4, 8>{});
   benchmark_run_help<FastMapBucket>(benchmark, f,
     std::integer_sequence<int, 1>{},
     std::integer_sequence<int, 0>{},
-    std::integer_sequence<int, 16>{},
     std::integer_sequence<int, 2>{});
 }
 
@@ -108,21 +106,19 @@ void benchmark_64_fastmap_pgmfull(sosd::Benchmark<uint64_t, Searcher>& benchmark
 
 template <class T, template <typename> typename Searcher>
 void benchmark_fastmap_pgmbucket(sosd::Benchmark<T, Searcher>& benchmark, bool pareto) {
-  auto f = [](auto x, auto y, auto z, auto u, auto v)
-  { return 10 * (100 * (100 * (10 * x + y) + z) + u) + v; };
+  auto f = [](auto x, auto y, auto z, auto u)
+  { return 10 * (1000 * (10 * x + y) + z) + u; };
   if constexpr (!simple_params)
     if (pareto)
       return benchmark_run_help<FastMapPGMBucket>(benchmark, f,
-        std::integer_sequence<int, 4, 16, 64, 256>{},
+        std::integer_sequence<int, 4, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191>{},
         std::integer_sequence<int, 1, 4>{},
-        std::integer_sequence<int, 0, 10, 20, 30, 50, 90>{},
-        std::integer_sequence<int, 16, 32>{},
+        std::integer_sequence<int, 0, 10, 20, 30, 50, 90, 150, 310>{},
         std::integer_sequence<int, 2, 4>{});
   benchmark_run_help<FastMapPGMBucket>(benchmark, f,
-    std::integer_sequence<int, 32>{},
+    std::integer_sequence<int, 31>{},
     std::integer_sequence<int, 1>{},
     std::integer_sequence<int, 0>{},
-    std::integer_sequence<int, 16>{},
     std::integer_sequence<int, 2>{});
 }
 

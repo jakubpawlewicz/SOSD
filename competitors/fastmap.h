@@ -146,10 +146,9 @@ class FastMapBucket : public FastMapBase<FastMap::BucketPile, KeyType, size_scal
     int s = size_scale;
     params_.decay = 1.0 / (double) (s % 10);
     s /= 10;
-    params_.ends_to_accept = s % 100;
-    s /= 100;
-    params_.eps = double(s % 100) / 10.0;
-    params_.lambda = (double)(s / 100);
+    params_.ends_to_accept = 32;
+    params_.eps = double(s % 1000) / 10.0;
+    params_.lambda = (double)(s / 1000);
     return true;
   }
 };
@@ -183,10 +182,9 @@ class FastMapPGMBucket : public FastMapBase<FastMap::LinApxOptBucketPile, KeyTyp
     params_.avg_reads = 1.0;
     params_.decay = 1.0 / (double) (size_scale % 10);
     s /= 10;
-    params_.ends_to_accept = s % 100;
-    s /= 100;
-    params_.eps = double(s % 100) / 10.0;
-    s /= 100;
+    params_.ends_to_accept = 32;
+    params_.eps = double(s % 1000) / 10.0;
+    s /= 1000;
     params_.lambda = double(s % 10);
     params_.block_size = s / 10;
     return true;
