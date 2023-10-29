@@ -51,26 +51,26 @@ void execute_32_bit(Benchmark benchmark, bool pareto, bool only_mode,
                     std::string only, std::string filename) {
   // Build and probe individual indexes.
   check_only("RMI", benchmark_32_rmi(benchmark, pareto, filename));
-  check_only("RS", benchmark_32_rs(benchmark, pareto));
-  check_only("TS", benchmark_32_ts(benchmark, pareto));
+  //check_only("RS", benchmark_32_rs(benchmark, pareto));
+  //check_only("TS", benchmark_32_ts(benchmark, pareto));
   check_only("PGM", benchmark_32_pgm(benchmark, pareto));
-  check_only("CHT", benchmark_32_cht(benchmark, pareto));
-  check_only("BTree", benchmark_32_btree(benchmark, pareto));
-  check_only("IBTree", benchmark_32_ibtree(benchmark, pareto));
-  check_only("FAST", benchmark_32_fast(benchmark, pareto));
+  //check_only("CHT", benchmark_32_cht(benchmark, pareto));
+  //check_only("BTree", benchmark_32_btree(benchmark, pareto));
+  //check_only("IBTree", benchmark_32_ibtree(benchmark, pareto));
+  //check_only("FAST", benchmark_32_fast(benchmark, pareto));
   check_only("FastMapBucket", benchmark_32_fastmap_bucket(benchmark, pareto));
-  check_only("FastMapPGMFull", benchmark_32_fastmap_pgmfull(benchmark, pareto));
+  //check_only("FastMapPGMFull", benchmark_32_fastmap_pgmfull(benchmark, pareto));
   check_only("FastMapPGMBucket", benchmark_32_fastmap_pgmbucket(benchmark, pareto));
-  check_only("FastMapApx", benchmark_32_fastmap_apx(benchmark, pareto));
-  check_only("ALEX", benchmark_32_alex(benchmark, pareto));
+  //check_only("FastMapApx", benchmark_32_fastmap_apx(benchmark, pareto));
+  //check_only("ALEX", benchmark_32_alex(benchmark, pareto));
   check_only("RMI_CPP", benchmark_32_rmi_cpp(benchmark, pareto));
 #ifndef __APPLE__
 #ifndef DISABLE_FST
   check_only("FST", benchmark_32_fst(benchmark, pareto));
 #endif
-  check_only("Wormhole", benchmark_32_wormhole(benchmark, pareto));
+  //check_only("Wormhole", benchmark_32_wormhole(benchmark, pareto));
 #endif
-
+  return;
   if (benchmark.uses_binary_search()) {
     check_only("RBS", benchmark_32_rbs(benchmark, pareto));
     check_only("CuckooMap", benchmark.template Run<CuckooHash>());
@@ -84,27 +84,27 @@ void execute_64_bit(Benchmark benchmark, bool pareto, bool only_mode,
                     std::string only, std::string filename) {
   // Build and probe individual indexes.
   check_only("RMI", benchmark_64_rmi(benchmark, pareto, filename));
-  check_only("RS", benchmark_64_rs(benchmark, pareto));
-  check_only("TS", benchmark_64_ts(benchmark, pareto));
+  //check_only("RS", benchmark_64_rs(benchmark, pareto));
+  //check_only("TS", benchmark_64_ts(benchmark, pareto));
   check_only("PGM", benchmark_64_pgm(benchmark, pareto));
-  check_only("CHT", benchmark_64_cht(benchmark, pareto));
-  check_only("ART", benchmark_64_art(benchmark, pareto));
-  check_only("BTree", benchmark_64_btree(benchmark, pareto));
-  check_only("IBTree", benchmark_64_ibtree(benchmark, pareto));
-  check_only("FAST", benchmark_64_fast(benchmark, pareto));
+  //check_only("CHT", benchmark_64_cht(benchmark, pareto));
+  //check_only("ART", benchmark_64_art(benchmark, pareto));
+  //check_only("BTree", benchmark_64_btree(benchmark, pareto));
+  //check_only("IBTree", benchmark_64_ibtree(benchmark, pareto));
+  //check_only("FAST", benchmark_64_fast(benchmark, pareto));
   check_only("FastMapBucket", benchmark_64_fastmap_bucket(benchmark, pareto));
-  check_only("FastMapPGMFull", benchmark_64_fastmap_pgmfull(benchmark, pareto));
+  //check_only("FastMapPGMFull", benchmark_64_fastmap_pgmfull(benchmark, pareto));
   check_only("FastMapPGMBucket", benchmark_64_fastmap_pgmbucket(benchmark, pareto));
-  check_only("FastMapApx", benchmark_64_fastmap_apx(benchmark, pareto));
-  check_only("ALEX", benchmark_64_alex(benchmark, pareto));
+  //check_only("FastMapApx", benchmark_64_fastmap_apx(benchmark, pareto));
+  //check_only("ALEX", benchmark_64_alex(benchmark, pareto));
   check_only("RMI_CPP", benchmark_64_rmi_cpp(benchmark, pareto));
 #ifndef __APPLE__
 #ifndef DISABLE_FST
   check_only("FST", benchmark_64_fst(benchmark, pareto));
 #endif
-  check_only("Wormhole", benchmark_64_wormhole(benchmark, pareto));
+  //check_only("Wormhole", benchmark_64_wormhole(benchmark, pareto));
 #endif
-
+  return;
   if (benchmark.uses_binary_search()) {
     check_only("RBS", benchmark_64_rbs(benchmark, pareto));
     check_only("RobinHash", benchmark.template Run<RobinHash<uint64_t>>());
