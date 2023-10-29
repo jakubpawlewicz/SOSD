@@ -11,7 +11,7 @@
 template <class KeyType, int rmi_variant, uint64_t build_time, size_t rmi_size,
           const char* namespc, uint64_t (*RMI_FUNC)(uint64_t, size_t*),
           bool (*RMI_LOAD)(char const*), void (*RMI_CLEANUP)()>
-class RMI_B {
+class RMI_B : public Competitor {
  public:
   uint64_t Build(const std::vector<KeyValue<KeyType>>& data) {
     data_size_ = data.size();

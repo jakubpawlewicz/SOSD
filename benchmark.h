@@ -109,6 +109,11 @@ class Benchmark {
     }
 
     build_ns_ = index.Build(index_data_);
+    {
+      std::stringstream ss(index.BuildInfo());
+      for (std::string line; std::getline(ss, line);)
+        std::cout << "INFO: " << line << std::endl;
+    }
 
     // Do equality lookups.
     if constexpr (!sosd_config::fast_mode) {

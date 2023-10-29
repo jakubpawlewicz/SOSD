@@ -65,6 +65,10 @@ class FastMapBase : public FastMapUtils<KeyType>, public Competitor {
     return Build(B::GetKeys(data));
   }
 
+  std::string BuildInfo() const {
+    return idx_->GetInfo().ToStd();
+  }
+
   SearchBound EqualityLookup(const KeyType _lookup_key) const {
     KeyTypeSigned lookup_key = (KeyTypeSigned) AdjustKey(_lookup_key);
     if (lookup_key == last_key_)

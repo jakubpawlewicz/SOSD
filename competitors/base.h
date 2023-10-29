@@ -9,4 +9,6 @@ class Competitor {
   }
 
   int variant() const { return 0; }
+
+  std::string BuildInfo() const { return std::string(); }
 };
