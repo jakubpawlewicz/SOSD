@@ -26,6 +26,19 @@ build_rmi_set normal_200M_uint64
 build_rmi_set lognormal_200M_uint32
 build_rmi_set lognormal_200M_uint64
 
+build_rmi_set normal_rand_200M_uint32
+build_rmi_set normal_rand_200M_uint64
+
+build_rmi_set lognormal_rand_200M_uint32
+build_rmi_set lognormal_rand_200M_uint64
+
+build_rmi_set hops_100_200M_uint32
+build_rmi_set hops_100_200M_uint64
+build_rmi_set hops_10k_200M_uint32
+build_rmi_set hops_10k_200M_uint64
+build_rmi_set hops_1m_200M_uint32
+build_rmi_set hops_1m_200M_uint64
+
 build_rmi_set uniform_dense_200M_uint32
 build_rmi_set uniform_dense_200M_uint64
 
