@@ -22,6 +22,19 @@ generate_lookups normal_200M_uint64
 generate_lookups lognormal_200M_uint32
 generate_lookups lognormal_200M_uint64
 
+generate_lookups normal_rand_200M_uint32
+generate_lookups normal_rand_200M_uint64
+
+generate_lookups lognormal_rand_200M_uint32
+generate_lookups lognormal_rand_200M_uint64
+
+generate_lookups hops_100_200M_uint32
+generate_lookups hops_100_200M_uint64
+generate_lookups hops_10k_200M_uint32
+generate_lookups hops_10k_200M_uint64
+generate_lookups hops_1m_200M_uint32
+generate_lookups hops_1m_200M_uint64
+
 generate_lookups uniform_dense_200M_uint32
 generate_lookups uniform_dense_200M_uint64
 
