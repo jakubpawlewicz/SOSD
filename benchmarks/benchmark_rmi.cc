@@ -51,6 +51,11 @@ void benchmark_32_rmi(sosd::Benchmark<uint32_t, Searcher>& benchmark,
   run_rmi_binary_pareto(uint32, books_200M);
   run_rmi_binary_pareto(uint32, normal_200M);
   run_rmi_binary_pareto(uint32, lognormal_200M);
+  run_rmi_binary_pareto(uint32, normal_rand_200M);
+  run_rmi_binary_pareto(uint32, lognormal_rand_200M);
+  run_rmi_binary_pareto(uint32, hops_100_200M);
+  run_rmi_binary_pareto(uint32, hops_10k_200M);
+  run_rmi_binary_pareto(uint32, hops_1m_200M);
   run_rmi_binary_pareto(uint32, uniform_dense_200M);
   run_rmi_binary_pareto(uint32, uniform_sparse_200M);
 }
@@ -73,6 +78,11 @@ void benchmark_64_rmi(sosd::Benchmark<uint64_t, Searcher>& benchmark,
 
   run_rmi_binary_pareto(uint64, normal_200M);
   run_rmi_binary_pareto(uint64, lognormal_200M);
+  run_rmi_binary_pareto(uint64, normal_rand_200M);
+  run_rmi_binary_pareto(uint64, lognormal_rand_200M);
+  run_rmi_binary_pareto(uint64, hops_100_200M);
+  run_rmi_binary_pareto(uint64, hops_10k_200M);
+  run_rmi_binary_pareto(uint64, hops_1m_200M);
   run_rmi_binary_pareto(uint64, uniform_dense_200M);
   run_rmi_binary_pareto(uint64, uniform_sparse_200M);
 }
