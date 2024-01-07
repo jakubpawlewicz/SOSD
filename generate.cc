@@ -61,7 +61,7 @@ vector<EqualityLookup<KeyType>> generate_equality_lookups(
     const uint64_t result =
         bbs.search(data, lookup_key, &num_qualifying, 0, data.size());
 
-    if (num_qualifying > max_num_qualifying) {
+    if (num_qualifying > max_num_qualifying || lookup_key == std::numeric_limits<KeyType>::max()) {
       // Too many qualifying entries.
       ++num_retries;
       if (num_retries > max_num_retries)
