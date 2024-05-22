@@ -4,23 +4,23 @@
 #include "base.h"
 #include "FastMap.h"
 
-template <class KeyType>
+template <class KeyType, bool make_signed>
 class FastMapUtils {
  protected:
-  static KeyType AdjustKey(KeyType key)
+  using AdjustedKeyType = std::conditional_t<make_signed, std::make_signed_t<KeyType>, std::make_unsigned_t<KeyType>>;
+  static AdjustedKeyType AdjustKey(KeyType key)
   {
-    if constexpr (std::is_signed_v<KeyType>)
+    if constexpr (std::is_signed_v<KeyType> != make_signed)
       return key;
     else
       return key ^ std::numeric_limits<KeyTypeSigned>::min();
   }
-  typedef std::make_signed_t<KeyType> KeyTypeSigned;
 
-  Upp::Vector<KeyTypeSigned> GetKeys(const std::vector<KeyValue<KeyType>>& data) const {
-    Upp::Vector<KeyTypeSigned> keys;
+  Upp::Vector<AdjustedKeyType> GetKeys(const std::vector<KeyValue<KeyType>>& data) const {
+    Upp::Vector<AdjustedKeyType> keys;
     keys.SetCount((int)data.size());
     for (int i = 0; i < keys.GetCount(); i++)
-      keys[i] = (KeyTypeSigned)AdjustKey(data[i].key);
+      keys[i] = AdjustKey(data[i].key);
     return keys;
   }
 
@@ -29,20 +29,20 @@ class FastMapUtils {
     int begin_;
     int count_;
     int GetCount() const { return count_; }
-    KeyTypeSigned operator[](int i) const { return AdjustKey((*data_)[begin_ + i].key); }
+    AdjustedKeyType operator[](int i) const { return AdjustKey((*data_)[begin_ + i].key); }
     Range(const std::vector<KeyValue<KeyType>> *data, int begin, int count)
       : data_(data), begin_(begin), count_(count) {}
   };
 };
 
-template <template <class> class Index, class KeyType, int size_scale>
-class FastMapBase : public FastMapUtils<KeyType>, public Competitor {
-  typedef FastMapUtils<KeyType> B;
+template <template <class> class Index, class KeyType, bool make_signed, int size_scale>
+class FastMapBase : public FastMapUtils<KeyType, make_signed>, public Competitor {
+  typedef FastMapUtils<KeyType, make_signed> B;
  protected:
-  typedef typename B::KeyTypeSigned KeyTypeSigned;
+  typedef typename B::AdjustedKeyType AdjustedKeyType;
   using B::AdjustKey;
 
-  uint64_t Build(const Upp::Vector<KeyTypeSigned>& keys) {
+  uint64_t Build(const Upp::Vector<AdjustedKeyType>& keys) {
     last_idx_ = keys.size() - 1;
     while (last_idx_ > 0 && keys[last_idx_ - 1] == keys[last_idx_])
       last_idx_--;
@@ -70,7 +70,7 @@ class FastMapBase : public FastMapUtils<KeyType>, public Competitor {
   }
 
   SearchBound EqualityLookup(const KeyType _lookup_key) const {
-    KeyTypeSigned lookup_key = (KeyTypeSigned) AdjustKey(_lookup_key);
+    AdjustedKeyType lookup_key = AdjustKey(_lookup_key);
     if (lookup_key == last_key_)
       return {last_idx_, last_idx_ + 1};
     FastMap::Intvl intvl = idx_->FindIntvl(lookup_key);
@@ -87,17 +87,17 @@ class FastMapBase : public FastMapUtils<KeyType>, public Competitor {
  protected:
   std::string data_filename_;
   FastMap::Params params_;
-  Upp::One<Index<KeyTypeSigned>> idx_;
+  Upp::One<Index<AdjustedKeyType>> idx_;
   size_t last_idx_;
-  KeyTypeSigned last_key_;
+  AdjustedKeyType last_key_;
 };
 
-template <template <class> class Index, class KeyType, int size_scale>
-class FastMapApxBase : public FastMapBase<Index, KeyType, size_scale> {
-  typedef FastMapBase<Index, KeyType, size_scale> B;
+template <template <class> class Index, class KeyType, bool make_signed, int size_scale>
+class FastMapApxBase : public FastMapBase<Index, KeyType, make_signed, size_scale> {
+  typedef FastMapBase<Index, KeyType, make_signed, size_scale> B;
   using B::idx_;
   using B::AdjustKey;
-  typedef typename B::KeyTypeSigned KeyTypeSigned;
+  typedef typename B::AdjustedKeyType AdjustedKeyType;
  public:
   uint64_t Build(const std::vector<KeyValue<KeyType>>& data) {
     data_ = &data;
@@ -105,10 +105,10 @@ class FastMapApxBase : public FastMapBase<Index, KeyType, size_scale> {
   }
 
   SearchBound EqualityLookup(const KeyType _lookup_key) const {
-    KeyTypeSigned lookup_key = (KeyTypeSigned)AdjustKey(_lookup_key);
+    AdjustedKeyType lookup_key = AdjustKey(_lookup_key);
     if (lookup_key == B::last_key_)
       return {B::last_idx_, B::last_idx_ + 1};
-    typename Index<KeyTypeSigned>::State state;
+    typename Index<AdjustedKeyType>::State state;
     FastMap::Intvl intvl = idx_->TryFindFirst(lookup_key, state);
     for(;;) {
       if (intvl.b > (int) data_->size()) {
@@ -135,8 +135,8 @@ class FastMapApxBase : public FastMapBase<Index, KeyType, size_scale> {
 };
 
 template <class KeyType, int size_scale>
-class FastMapBucket : public FastMapBase<FastMap::BucketPile, KeyType, size_scale> {
-  typedef FastMapBase<FastMap::BucketPile, KeyType, size_scale> B;
+class FastMapBucket : public FastMapBase<FastMap::BucketPile, KeyType, true, size_scale> {
+  typedef FastMapBase<FastMap::BucketPile, KeyType, true, size_scale> B;
   using B::params_;
  public:
   std::string name() const { return "FastMapBucket"; }
@@ -153,9 +153,49 @@ class FastMapBucket : public FastMapBase<FastMap::BucketPile, KeyType, size_scal
   }
 };
 
+template <template <class> class Index, class KeyType, int size_scale>
+class FastMapRegBucketBase : public FastMapBase<Index, KeyType, false, size_scale> {
+  typedef FastMapBase<Index, KeyType, false, size_scale> B;
+  using B::params_;
+ public:
+  bool applicable(bool _unique, const std::string& data_filename) {
+    B::data_filename_ = data_filename;
+    static int sizes[10] = { 402653216, 201326624, 100663328, 41943040, 12582944, 6291488, 3145760, 786464, 24608, 3088 };
+    params_.memory_target = sizes[size_scale % 10];
+    params_.block_size = Upp::Null;
+    params_.memory_cost = Upp::Null;
+    params_.level_search_type = size_scale / 10;
+    return true;
+  }
+};
+
 template <class KeyType, int size_scale>
-class FastMapPGMFull : public FastMapBase<FastMap::LinApxOptPile, KeyType, size_scale> {
-  typedef FastMapBase<FastMap::LinApxOptPile, KeyType, size_scale> B;
+class FastMapRegBucketSingle : public FastMapRegBucketBase<FastMap::RegBucketSinglePile, KeyType, size_scale> {
+ public:
+  std::string name() const { return "FastMapRegBucketSingle"; }
+};
+
+template <class KeyType, int size_scale>
+class FastMapRegBucketDouble : public FastMapRegBucketBase<FastMap::RegBucketDoublePile, KeyType, size_scale> {
+ public:
+  std::string name() const { return "FastMapRegBucketDouble"; }
+};
+
+template <class KeyType, int size_scale>
+class FastMapPGMRegBucketSingle : public FastMapRegBucketBase<FastMap::LinApxOptRegBucketPile, KeyType, size_scale> {
+ public:
+  std::string name() const { return "FastMapPGMRegBucketSingle"; }
+};
+
+template <class KeyType, int size_scale>
+class FastMapPGMRegBucketDouble : public FastMapRegBucketBase<FastMap::LinApxOptDoubleRegBucketPile, KeyType, size_scale> {
+ public:
+  std::string name() const { return "FastMapPGMRegBucketDouble"; }
+};
+
+template <class KeyType, int size_scale>
+class FastMapPGMFull : public FastMapBase<FastMap::LinApxOptPile, KeyType, true, size_scale> {
+  typedef FastMapBase<FastMap::LinApxOptPile, KeyType, true, size_scale> B;
   using B::params_;
  public:
   std::string name() const { return "FastMapPGMFull"; }
@@ -170,8 +210,8 @@ class FastMapPGMFull : public FastMapBase<FastMap::LinApxOptPile, KeyType, size_
 };
 
 template <class KeyType, int size_scale>
-class FastMapPGMBucket : public FastMapBase<FastMap::LinApxOptBucketPile, KeyType, size_scale> {
-  typedef FastMapBase<FastMap::LinApxOptBucketPile, KeyType, size_scale> B;
+class FastMapPGMBucket : public FastMapBase<FastMap::LinApxOptBucketPile, KeyType, true, size_scale> {
+  typedef FastMapBase<FastMap::LinApxOptBucketPile, KeyType, true, size_scale> B;
   using B::params_;
  public:
   std::string name() const { return "FastMapPGMBucket"; }
@@ -192,8 +232,8 @@ class FastMapPGMBucket : public FastMapBase<FastMap::LinApxOptBucketPile, KeyTyp
 };
 
 template <class KeyType, int size_scale>
-class FastMapApx : public FastMapApxBase<FastMap::LinApxOptBucketPile, KeyType, size_scale> {
-  typedef FastMapApxBase<FastMap::LinApxOptBucketPile, KeyType, size_scale> B;
+class FastMapApx : public FastMapApxBase<FastMap::LinApxOptBucketPile, KeyType, true, size_scale> {
+  typedef FastMapApxBase<FastMap::LinApxOptBucketPile, KeyType, true, size_scale> B;
   using B::params_;
  public:
   std::string name() const { return "FastMapApx"; }

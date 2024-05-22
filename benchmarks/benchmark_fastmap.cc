@@ -79,6 +79,74 @@ void benchmark_64_fastmap_bucket(sosd::Benchmark<uint64_t, Searcher>& benchmark,
   benchmark_fastmap_bucket(benchmark, pareto);
 }
 
+template <template <class, int> class Index, int levels, class T, template <typename> typename Searcher>
+void benchmark_fastmap_regbucket(sosd::Benchmark<T, Searcher>& benchmark, bool pareto) {
+  auto f = [](auto x, auto y) { return 10 * x + y; };
+  if constexpr (!simple_params)
+    if (pareto)
+    {
+      if (levels <= 1)
+        return benchmark_run_help<Index>(benchmark, f,
+          std::integer_sequence<int, 0, 1, 2, 3>{},
+          std::integer_sequence<int, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9>{});
+      else
+        return benchmark_run_help<Index>(benchmark, f,
+          std::integer_sequence<int, 0, 1, 2, 3, 4, 5, 6, 7>{},
+          std::integer_sequence<int, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9>{});
+    }
+  benchmark_run_help<FastMapBucket>(benchmark, f,
+    std::integer_sequence<int, 0>{},
+    std::integer_sequence<int, 0>{});
+}
+
+template <template <typename> typename Searcher>
+void benchmark_32_fastmap_regbucket_single(sosd::Benchmark<uint32_t, Searcher>& benchmark,
+                                           bool pareto) {
+  benchmark_fastmap_regbucket<FastMapRegBucketSingle, 1>(benchmark, pareto);
+}
+
+template <template <typename> typename Searcher>
+void benchmark_64_fastmap_regbucket_single(sosd::Benchmark<uint64_t, Searcher>& benchmark,
+                                           bool pareto) {
+  benchmark_fastmap_regbucket<FastMapRegBucketSingle, 1>(benchmark, pareto);
+}
+
+template <template <typename> typename Searcher>
+void benchmark_32_fastmap_regbucket_double(sosd::Benchmark<uint32_t, Searcher>& benchmark,
+                                           bool pareto) {
+  benchmark_fastmap_regbucket<FastMapRegBucketDouble, 2>(benchmark, pareto);
+}
+
+template <template <typename> typename Searcher>
+void benchmark_64_fastmap_regbucket_double(sosd::Benchmark<uint64_t, Searcher>& benchmark,
+                                           bool pareto) {
+  benchmark_fastmap_regbucket<FastMapRegBucketDouble, 2>(benchmark, pareto);
+}
+
+template <template <typename> typename Searcher>
+void benchmark_32_fastmap_pgmregbucket_single(sosd::Benchmark<uint32_t, Searcher>& benchmark,
+                                              bool pareto) {
+  benchmark_fastmap_regbucket<FastMapPGMRegBucketSingle, 1>(benchmark, pareto);
+}
+
+template <template <typename> typename Searcher>
+void benchmark_64_fastmap_pgmregbucket_single(sosd::Benchmark<uint64_t, Searcher>& benchmark,
+                                              bool pareto) {
+  benchmark_fastmap_regbucket<FastMapPGMRegBucketSingle, 1>(benchmark, pareto);
+}
+
+template <template <typename> typename Searcher>
+void benchmark_32_fastmap_pgmregbucket_double(sosd::Benchmark<uint32_t, Searcher>& benchmark,
+                                              bool pareto) {
+  benchmark_fastmap_regbucket<FastMapPGMRegBucketDouble, 2>(benchmark, pareto);
+}
+
+template <template <typename> typename Searcher>
+void benchmark_64_fastmap_pgmregbucket_double(sosd::Benchmark<uint64_t, Searcher>& benchmark,
+                                              bool pareto) {
+  benchmark_fastmap_regbucket<FastMapPGMRegBucketDouble, 2>(benchmark, pareto);
+}
+
 template <class T, template <typename> typename Searcher>
 void benchmark_fastmap_pgmfull(sosd::Benchmark<T, Searcher>& benchmark, bool pareto) {
   constexpr auto f = [](auto x, auto y) constexpr { return 100 * x + y; };
