@@ -13,7 +13,7 @@ class FastMapUtils {
     if constexpr (std::is_signed_v<KeyType> != make_signed)
       return key;
     else
-      return key ^ std::numeric_limits<KeyTypeSigned>::min();
+      return key ^ std::numeric_limits<AdjustedKeyType>::min();
   }
 
   Upp::Vector<AdjustedKeyType> GetKeys(const std::vector<KeyValue<KeyType>>& data) const {

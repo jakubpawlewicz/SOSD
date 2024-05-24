@@ -6,7 +6,7 @@
 
 namespace {
 
-constexpr bool simple_params = true;
+constexpr bool simple_params = false;
 
 template <class... Args>
 struct Applier
@@ -87,15 +87,15 @@ void benchmark_fastmap_regbucket(sosd::Benchmark<T, Searcher>& benchmark, bool p
     {
       if (levels <= 1)
         return benchmark_run_help<Index>(benchmark, f,
-          std::integer_sequence<int, 0, 1, 2, 3>{},
+          std::integer_sequence<int, 0/*, 1, 2, 3*/>{},
           std::integer_sequence<int, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9>{});
       else if (levels <= 2)
         return benchmark_run_help<Index>(benchmark, f,
-          std::integer_sequence<int, 0, 1, 2, 3, 4, 5, 6, 7>{},
+          std::integer_sequence<int, 0/*, 1, 2, 3, 4, 5, 6, 7*/>{},
           std::integer_sequence<int, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9>{});
       else
         return benchmark_run_help<Index>(benchmark, f,
-          std::integer_sequence<int, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15>{},
+          std::integer_sequence<int, 0/*, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15*/>{},
           std::integer_sequence<int, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9>{});
     }
   benchmark_run_help<FastMapBucket>(benchmark, f,
@@ -231,6 +231,18 @@ void benchmark_64_fastmap_apx(sosd::Benchmark<uint64_t, Searcher>& benchmark,
   benchmark_fastmap_apx(benchmark, pareto);
 }
 
+INSTANTIATE_TEMPLATES(benchmark_32_fastmap_regbucket_single, uint32_t);
+INSTANTIATE_TEMPLATES(benchmark_64_fastmap_regbucket_single, uint64_t);
+
+INSTANTIATE_TEMPLATES(benchmark_32_fastmap_regbucket_double, uint32_t);
+INSTANTIATE_TEMPLATES(benchmark_64_fastmap_regbucket_double, uint64_t);
+
+INSTANTIATE_TEMPLATES(benchmark_32_fastmap_pgmregbucket_single, uint32_t);
+INSTANTIATE_TEMPLATES(benchmark_64_fastmap_pgmregbucket_single, uint64_t);
+
+INSTANTIATE_TEMPLATES(benchmark_32_fastmap_pgmregbucket_double, uint32_t);
+INSTANTIATE_TEMPLATES(benchmark_64_fastmap_pgmregbucket_double, uint64_t);
+/*
 INSTANTIATE_TEMPLATES(benchmark_32_fastmap_bucket, uint32_t);
 INSTANTIATE_TEMPLATES(benchmark_64_fastmap_bucket, uint64_t);
 
@@ -242,3 +254,4 @@ INSTANTIATE_TEMPLATES(benchmark_64_fastmap_pgmbucket, uint64_t);
 
 INSTANTIATE_TEMPLATES(benchmark_32_fastmap_apx, uint32_t);
 INSTANTIATE_TEMPLATES(benchmark_64_fastmap_apx, uint64_t);
+*/
