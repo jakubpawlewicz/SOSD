@@ -62,8 +62,9 @@ void execute_32_bit(Benchmark benchmark, bool pareto, bool only_mode,
   check_only("FastMapRegBucketDouble", benchmark_32_fastmap_regbucket_double(benchmark, pareto));
   //check_only("FastMapBucket", benchmark_32_fastmap_bucket(benchmark, pareto));
   //check_only("FastMapPGMFull", benchmark_32_fastmap_pgmfull(benchmark, pareto));
+  check_only("FastMapPGM", benchmark_32_fastmap_pgm(benchmark, pareto));
   check_only("FastMapPGMRegBucketSingle", benchmark_32_fastmap_pgmregbucket_single(benchmark, pareto));
-  check_only("FastMapPGMRegBucketDouble", benchmark_32_fastmap_pgmregbucket_double(benchmark, pareto));
+  //check_only("FastMapPGMRegBucketDouble", benchmark_32_fastmap_pgmregbucket_double(benchmark, pareto));
   //check_only("FastMapPGMBucket", benchmark_32_fastmap_pgmbucket(benchmark, pareto));
   //check_only("FastMapApx", benchmark_32_fastmap_apx(benchmark, pareto));
   //check_only("ALEX", benchmark_32_alex(benchmark, pareto));
@@ -100,8 +101,9 @@ void execute_64_bit(Benchmark benchmark, bool pareto, bool only_mode,
   check_only("FastMapRegBucketDouble", benchmark_64_fastmap_regbucket_double(benchmark, pareto));
   //check_only("FastMapBucket", benchmark_64_fastmap_bucket(benchmark, pareto));
   //check_only("FastMapPGMFull", benchmark_64_fastmap_pgmfull(benchmark, pareto));
+  check_only("FastMapPGM", benchmark_64_fastmap_pgm(benchmark, pareto));
   check_only("FastMapPGMRegBucketSingle", benchmark_64_fastmap_pgmregbucket_single(benchmark, pareto));
-  check_only("FastMapPGMRegBucketDouble", benchmark_64_fastmap_pgmregbucket_double(benchmark, pareto));
+  //check_only("FastMapPGMRegBucketDouble", benchmark_64_fastmap_pgmregbucket_double(benchmark, pareto));
   //check_only("FastMapPGMBucket", benchmark_64_fastmap_pgmbucket(benchmark, pareto));
   //check_only("FastMapApx", benchmark_64_fastmap_apx(benchmark, pareto));
   //check_only("ALEX", benchmark_64_alex(benchmark, pareto));

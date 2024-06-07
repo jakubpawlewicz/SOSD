@@ -127,6 +127,31 @@ void benchmark_64_fastmap_regbucket_double(sosd::Benchmark<uint64_t, Searcher>& 
   benchmark_fastmap_regbucket<FastMapRegBucketDouble, 2>(benchmark, pareto);
 }
 
+template <class T, template <typename> typename Searcher>
+void benchmark_fastmap_pgm(sosd::Benchmark<T, Searcher>& benchmark, bool pareto) {
+  constexpr auto f = [](auto x, auto y) constexpr { return 8 * x + y; };
+  if constexpr (!simple_params)
+    if (pareto)
+      return benchmark_run_help<FastMapPGMFull>(benchmark, f,
+        std::integer_sequence<int, 4, 8, 16, 32, 64, 128, 256, 1024, 4096, 65536>{},
+        std::integer_sequence<int, 0>{});
+  benchmark_run_help<FastMapPGMFull>(benchmark, f,
+    std::integer_sequence<int, 34>{},
+    std::integer_sequence<int, 0>{});
+}
+
+template <template <typename> typename Searcher>
+void benchmark_32_fastmap_pgm(sosd::Benchmark<uint32_t, Searcher>& benchmark,
+                     bool pareto) {
+  benchmark_fastmap_pgm(benchmark, pareto);
+}
+
+template <template <typename> typename Searcher>
+void benchmark_64_fastmap_pgm(sosd::Benchmark<uint64_t, Searcher>& benchmark,
+                     bool pareto) {
+  benchmark_fastmap_pgm(benchmark, pareto);
+}
+
 template <template <typename> typename Searcher>
 void benchmark_32_fastmap_pgmregbucket_single(sosd::Benchmark<uint32_t, Searcher>& benchmark,
                                               bool pareto) {
@@ -237,12 +262,16 @@ INSTANTIATE_TEMPLATES(benchmark_64_fastmap_regbucket_single, uint64_t);
 INSTANTIATE_TEMPLATES(benchmark_32_fastmap_regbucket_double, uint32_t);
 INSTANTIATE_TEMPLATES(benchmark_64_fastmap_regbucket_double, uint64_t);
 
+INSTANTIATE_TEMPLATES(benchmark_32_fastmap_pgm, uint32_t);
+INSTANTIATE_TEMPLATES(benchmark_64_fastmap_pgm, uint64_t);
+
 INSTANTIATE_TEMPLATES(benchmark_32_fastmap_pgmregbucket_single, uint32_t);
 INSTANTIATE_TEMPLATES(benchmark_64_fastmap_pgmregbucket_single, uint64_t);
 
+/*
 INSTANTIATE_TEMPLATES(benchmark_32_fastmap_pgmregbucket_double, uint32_t);
 INSTANTIATE_TEMPLATES(benchmark_64_fastmap_pgmregbucket_double, uint64_t);
-/*
+
 INSTANTIATE_TEMPLATES(benchmark_32_fastmap_bucket, uint32_t);
 INSTANTIATE_TEMPLATES(benchmark_64_fastmap_bucket, uint64_t);
 
