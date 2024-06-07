@@ -178,6 +178,7 @@ class FastMapRegBucketBase : public FastMapBase<Index, KeyType, false, size_scal
     B::data_filename_ = data_filename;
     static int sizes[10] = { 402653216, 201326624, 100663328, 41943040, 12582944, 6291488, 3145760, 786464, 24608, 3088 };
     params_.memory_target = sizes[size_scale % 10];
+    params_.avg_reads = 1.0;
     params_.block_size = Upp::Null;
     params_.memory_cost = Upp::Null;
     params_.level_search_type = size_scale / 10;
