@@ -98,7 +98,7 @@ void benchmark_fastmap_regbucket(sosd::Benchmark<T, Searcher>& benchmark, bool p
           std::integer_sequence<int, 0/*, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15*/>{},
           std::integer_sequence<int, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9>{});
     }
-  benchmark_run_help<FastMapBucket>(benchmark, f,
+  benchmark_run_help<Index>(benchmark, f,
     std::integer_sequence<int, 0>{},
     std::integer_sequence<int, 0>{});
 }
@@ -132,10 +132,10 @@ void benchmark_fastmap_pgm(sosd::Benchmark<T, Searcher>& benchmark, bool pareto)
   constexpr auto f = [](auto x, auto y) constexpr { return 8 * x + y; };
   if constexpr (!simple_params)
     if (pareto)
-      return benchmark_run_help<FastMapPGMFull>(benchmark, f,
+      return benchmark_run_help<FastMapPGM>(benchmark, f,
         std::integer_sequence<int, 4, 8, 16, 32, 64, 128, 256, 1024, 4096, 65536>{},
         std::integer_sequence<int, 0>{});
-  benchmark_run_help<FastMapPGMFull>(benchmark, f,
+  benchmark_run_help<FastMapPGM>(benchmark, f,
     std::integer_sequence<int, 34>{},
     std::integer_sequence<int, 0>{});
 }

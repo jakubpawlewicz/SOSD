@@ -153,6 +153,21 @@ class FastMapBucket : public FastMapBase<FastMap::BucketPile, KeyType, true, siz
   }
 };
 
+template <class KeyType, int size_scale>
+class FastMapPGM : public FastMapBase<FastMap::LinApxOptSinglePile, KeyType, false, size_scale> {
+  typedef FastMapBase<FastMap::LinApxOptSinglePile, KeyType, false, size_scale> B;
+  using B::params_;
+ public:
+  std::string name() const { return "FastMapPGM"; }
+
+  bool applicable(bool _unique, const std::string& data_filename) {
+    B::data_filename_ = data_filename;
+    params_.block_size = size_scale / 8;
+    params_.level_search_type = size_scale / 8;
+    return true;
+  }
+};
+
 template <template <class> class Index, class KeyType, int size_scale>
 class FastMapRegBucketBase : public FastMapBase<Index, KeyType, false, size_scale> {
   typedef FastMapBase<Index, KeyType, false, size_scale> B;
