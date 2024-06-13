@@ -86,7 +86,7 @@ struct array_info<std::array<T, N>> {
 // Compiler hints
 #ifndef assume_aligned
 #ifndef __CUDA_ARCH__
-#define assume_aligned(address, byte) __builtin_assume_aligned(address, byte)
+// #define assume_aligned(address, byte) __builtin_assume_aligned(address, byte)
 #else
 #define assume_aligned(address, byte)
 #endif

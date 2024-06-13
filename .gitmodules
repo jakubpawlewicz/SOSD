@@ -1,6 +1,6 @@
 [submodule "RMI"]
 	path = RMI
-	url = https://github.com/learnedsystems/RMI
+	url = git@github.com:jakubpawlewicz/RMI.git
 [submodule "competitors/FST"]
 	path = competitors/FST
 	url = https://github.com/Christoph-Maximilian/FST
@@ -18,7 +18,7 @@
 	url = https://github.com/wuxb45/wormhole.git
 [submodule "competitors/ALEX"]
 	path = competitors/ALEX
-	url = https://github.com/microsoft/ALEX.git
+	url = git@github.com:jakubpawlewicz/ALEX.git
 [submodule "competitors/CHT"]
 	path = competitors/CHT
 	url = https://github.com/stoianmihail/CHT.git
