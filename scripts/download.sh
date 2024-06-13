@@ -70,3 +70,6 @@ python3 gen_uniform.py --many
 python3 gen_uniform.py --many --sparse --uint32
 python3 gen_uniform.py --many --sparse
 python3 gen_norm.py
+python3 gen_normrand.py
+python3 gen_hops.py
+python3 gen_hophops.py

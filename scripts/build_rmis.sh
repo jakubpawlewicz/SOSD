@@ -39,6 +39,8 @@ build_rmi_set hops_10k_200M_uint64
 build_rmi_set hops_1m_200M_uint32
 build_rmi_set hops_1m_200M_uint64
 
+build_rmi_set hophops_200M_uint64
+
 build_rmi_set uniform_dense_200M_uint32
 build_rmi_set uniform_dense_200M_uint64
 

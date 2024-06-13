@@ -24,6 +24,7 @@ hops_10k_200M_uint32
 hops_10k_200M_uint64
 hops_1m_200M_uint32
 hops_1m_200M_uint64
+hophops_200M_uint64
 uniform_dense_200M_uint32
 uniform_dense_200M_uint64
 uniform_sparse_200M_uint32

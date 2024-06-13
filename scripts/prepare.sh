@@ -34,6 +34,7 @@ generate_lookups hops_10k_200M_uint32
 generate_lookups hops_10k_200M_uint64
 generate_lookups hops_1m_200M_uint32
 generate_lookups hops_1m_200M_uint64
+generate_lookups hophops_200M_uint64
 
 generate_lookups uniform_dense_200M_uint32
 generate_lookups uniform_dense_200M_uint64
