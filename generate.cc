@@ -22,12 +22,14 @@ constexpr size_t max_num_retries = 100;
 template <class KeyType, class T>
 vector<EqualityLookup<KeyType>> generate_equality_lookups(
     const vector<Row<KeyType>>& data, const vector<T>& unique_keys,
-    const size_t num_lookups, const double negative_lookup_ratio) {
+    const size_t num_lookups, const double negative_lookup_ratio,
+    const vector<T>& query_keys) {
   vector<EqualityLookup<KeyType>> lookups;
   lookups.reserve(num_lookups);
   util::FastRandom ranny(42);
   size_t num_generated = 0;
   size_t num_retries = 0;
+  size_t negative_keys = 0;
   BranchingBinarySearch<KeyType> bbs;
 
   // Required to generate negative lookups within data domain.
@@ -42,7 +44,10 @@ vector<EqualityLookup<KeyType>> generate_equality_lookups(
       size_t num_qualifying = 1;
       while (num_qualifying > 0) {
         // Draw lookup key from within data domain.
-        negative_lookup = (ranny.ScaleFactor() * (max_key - min_key)) + min_key;
+        if (negative_keys < query_keys.size())
+          negative_lookup = query_keys[negative_keys++];
+        else
+          negative_lookup = (ranny.ScaleFactor() * (max_key - min_key)) + min_key;
         bbs.search(data, negative_lookup, &num_qualifying, 0, data.size());
       }
       lookups.push_back({negative_lookup, util::NOT_FOUND});
@@ -119,15 +124,17 @@ void print_equality_lookup_stats(
 }
 
 int main(int argc, char* argv[]) {
-  if (argc < 3)
+  if (argc < 4)
     util::fail(
-        "usage: ./generate <data file> <num lookups> [negative lookup ratio]");
+        "usage: ./generate <data file> <num lookups> [negative lookup ratio [negative lookup keys file]]");
 
   const string filename = argv[1];
+  string query_keys_filename;
   const DataType type = util::resolve_type(filename);
   size_t num_lookups = stoull(argv[2]);
   double negative_lookup_ratio = 0.0;
   if (argc >= 4) negative_lookup_ratio = stod(argv[3]);
+  if (argc >= 5) query_keys_filename = argv[4];
   if (negative_lookup_ratio < 0 || negative_lookup_ratio > 1) {
     util::fail("negative lookup ratio must be between 0 and 1.");
   }
@@ -136,6 +143,9 @@ int main(int argc, char* argv[]) {
     case DataType::UINT32: {
       // Load data.
       const vector<uint32_t> keys = util::load_data<uint32_t>(filename);
+      vector<uint32_t> query_keys;
+      if (!query_keys_filename.empty())
+        query_keys = util::remove_duplicates(util::load_data<uint32_t>(query_keys_filename));
 
       if (!is_sorted(keys.begin(), keys.end()))
         util::fail("keys have to be sorted (read 32-bit keys)");
@@ -160,7 +170,7 @@ int main(int argc, char* argv[]) {
         equality_lookups = generate_equality_lookups_from_trace(data, keys);
       } else {
         equality_lookups = generate_equality_lookups(
-            data, unique_keys, num_lookups, negative_lookup_ratio);
+            data, unique_keys, num_lookups, negative_lookup_ratio, query_keys);
       }
 
       print_equality_lookup_stats(equality_lookups);
@@ -172,6 +182,9 @@ int main(int argc, char* argv[]) {
     case DataType::UINT64: {
       // Load data.
       const vector<uint64_t> keys = util::load_data<uint64_t>(filename);
+      vector<uint64_t> query_keys;
+      if (!query_keys_filename.empty())
+        query_keys = util::remove_duplicates(util::load_data<uint64_t>(query_keys_filename));
 
       if (!is_sorted(keys.begin(), keys.end()))
         util::fail("keys have to be sorted (read 64-bit keys)");
@@ -196,7 +209,7 @@ int main(int argc, char* argv[]) {
         equality_lookups = generate_equality_lookups_from_trace(data, keys);
       } else {
         equality_lookups = generate_equality_lookups(
-            data, unique_keys, num_lookups, negative_lookup_ratio);
+            data, unique_keys, num_lookups, negative_lookup_ratio, query_keys);
       }
 
       print_equality_lookup_stats(equality_lookups);
