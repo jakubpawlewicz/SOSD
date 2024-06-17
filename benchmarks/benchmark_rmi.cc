@@ -83,6 +83,7 @@ void benchmark_64_rmi(sosd::Benchmark<uint64_t, Searcher>& benchmark,
   run_rmi_binary_pareto(uint64, hops_100_200M);
   run_rmi_binary_pareto(uint64, hops_10k_200M);
   run_rmi_binary_pareto(uint64, hops_1m_200M);
+  run_rmi_binary_pareto(uint64, hophops_200M);
   run_rmi_binary_pareto(uint64, uniform_dense_200M);
   run_rmi_binary_pareto(uint64, uniform_sparse_200M);
 }
