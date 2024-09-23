@@ -87,15 +87,15 @@ void benchmark_fastmap_regbucket(sosd::Benchmark<T, Searcher>& benchmark, bool p
     {
       if (levels <= 1)
         return benchmark_run_help<Index>(benchmark, f,
-          std::integer_sequence<int, 0/*, 1, 2, 3*/>{},
+          std::integer_sequence<int, 0, 3>{},
           std::integer_sequence<int, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9>{});
       else if (levels <= 2)
         return benchmark_run_help<Index>(benchmark, f,
-          std::integer_sequence<int, 0/*, 1, 2, 3, 4, 5, 6, 7*/>{},
+          std::integer_sequence<int, 0, 7>{},
           std::integer_sequence<int, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9>{});
       else
         return benchmark_run_help<Index>(benchmark, f,
-          std::integer_sequence<int, 0/*, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15*/>{},
+          std::integer_sequence<int, 0, 15>{},
           std::integer_sequence<int, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9>{});
     }
   benchmark_run_help<Index>(benchmark, f,
