@@ -17,6 +17,7 @@
 #include "benchmarks/benchmark_rs.h"
 #include "benchmarks/benchmark_ts.h"
 #include "benchmarks/benchmark_wormhole.h"
+#include "benchmarks/benchmark_simple_index.h"
 #include "competitors/binary_search.h"
 #include "competitors/hash.h"
 #include "competitors/stanford_hash.h"
@@ -69,6 +70,9 @@ void execute_32_bit(Benchmark benchmark, bool pareto, bool only_mode,
   //check_only("FastMapApx", benchmark_32_fastmap_apx(benchmark, pareto));
   //check_only("ALEX", benchmark_32_alex(benchmark, pareto));
   check_only("RMI_CPP", benchmark_32_rmi_cpp(benchmark, pareto));
+  check_only("SimpleIndex", benchmark_32_simple_index(benchmark, pareto));
+  check_only("BitwiseIndex", benchmark_32_bitwise_index(benchmark, pareto));
+  check_only("GreedyPartitionIndex", benchmark_32_greedy_index(benchmark, pareto));
 #ifndef __APPLE__
 #ifndef DISABLE_FST
   check_only("FST", benchmark_32_fst(benchmark, pareto));
@@ -108,6 +112,9 @@ void execute_64_bit(Benchmark benchmark, bool pareto, bool only_mode,
   //check_only("FastMapApx", benchmark_64_fastmap_apx(benchmark, pareto));
   //check_only("ALEX", benchmark_64_alex(benchmark, pareto));
   check_only("RMI_CPP", benchmark_64_rmi_cpp(benchmark, pareto));
+  check_only("SimpleIndex", benchmark_64_simple_index(benchmark, pareto));
+  check_only("BitwiseIndex", benchmark_64_bitwise_index(benchmark, pareto));
+  check_only("GreedyPartitionIndex", benchmark_64_greedy_index(benchmark, pareto));
 #ifndef __APPLE__
 #ifndef DISABLE_FST
   check_only("FST", benchmark_64_fst(benchmark, pareto));
