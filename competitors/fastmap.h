@@ -10,7 +10,7 @@ class FastMapUtils {
   using AdjustedKeyType = std::conditional_t<make_signed, std::make_signed_t<KeyType>, std::make_unsigned_t<KeyType>>;
   static AdjustedKeyType AdjustKey(KeyType key)
   {
-    if constexpr (std::is_signed_v<KeyType> != make_signed)
+    if constexpr (std::is_signed_v<KeyType> == make_signed)
       return key;
     else
       return key ^ std::numeric_limits<AdjustedKeyType>::min();
