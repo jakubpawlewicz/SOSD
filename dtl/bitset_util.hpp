@@ -30,12 +30,12 @@ to_bitset(const T* ptr) {
 
 /// iterates over the positions of "on" bits in the given bitset
 template<u64 N>
-class on_bits_iterator: public std::iterator<
-    std::input_iterator_tag,   // iterator_category
-    $u64,                      // value_type
-    $u64,                      // difference_type
-    u64*,                      // pointer
-    $u64> {                    // reference
+class on_bits_iterator {
+  using iterator_category = std::input_iterator_tag;
+  using value_type = $u64;
+  using difference_type = $u64;
+  using pointer = u64*;
+  using reference = $u64;
 
   const std::bitset<N>& bits;
   $u64 bit_pos;

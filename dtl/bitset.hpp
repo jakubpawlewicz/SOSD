@@ -507,12 +507,12 @@ struct bitset {
 
 
   // iterates over the positions of "on" bits in the given bitset
-  class on_bits_iterator: public std::iterator<
-      std::input_iterator_tag,   // iterator_category
-      $u64,                      // value_type
-      $u64,                      // difference_type
-      u64*,                      // pointer
-      $u64> {                    // reference
+  class on_bits_iterator {
+    using iterator_categor = std::forward_iterator_tag;
+    using value_type = $u64;
+    using difference_type = $u64;
+    using pointer = u64*;
+    using reference = $u64;
 
     const bitset& bits;
     $u64 bit_pos;
