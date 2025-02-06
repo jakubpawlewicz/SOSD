@@ -6,7 +6,13 @@
 
 namespace {
 
-constexpr bool simple_params = false;
+constexpr bool simple_params =
+#ifdef NDEBUG
+false
+#else
+true
+#endif
+;
 
 template <class... Args>
 struct Applier
