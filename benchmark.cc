@@ -68,7 +68,7 @@ void execute_32_bit(Benchmark benchmark, bool pareto, bool only_mode,
   //check_only("FastMapPGMRegBucketDouble", benchmark_32_fastmap_pgmregbucket_double(benchmark, pareto));
   check_only("FastMapPGMBucket", benchmark_32_fastmap_pgmbucket(benchmark, pareto));
   //check_only("FastMapApx", benchmark_32_fastmap_apx(benchmark, pareto));
-  //check_only("ALEX", benchmark_32_alex(benchmark, pareto));
+  check_only("ALEX", benchmark_32_alex(benchmark, pareto));
   check_only("RMI_CPP", benchmark_32_rmi_cpp(benchmark, pareto));
   check_only("SimpleIndex", benchmark_32_simple_index(benchmark, pareto));
   check_only("BitwiseIndex", benchmark_32_bitwise_index(benchmark, pareto));

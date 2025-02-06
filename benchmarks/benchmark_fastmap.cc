@@ -272,6 +272,7 @@ INSTANTIATE_TEMPLATES(benchmark_64_fastmap_pgmregbucket_single, uint64_t);
 INSTANTIATE_TEMPLATES(benchmark_32_fastmap_pgmregbucket_double, uint32_t);
 INSTANTIATE_TEMPLATES(benchmark_64_fastmap_pgmregbucket_double, uint64_t);
 */
+
 INSTANTIATE_TEMPLATES(benchmark_32_fastmap_bucket, uint32_t);
 INSTANTIATE_TEMPLATES(benchmark_64_fastmap_bucket, uint64_t);
 
@@ -280,6 +281,7 @@ INSTANTIATE_TEMPLATES(benchmark_64_fastmap_pgmfull, uint64_t);
 
 INSTANTIATE_TEMPLATES(benchmark_32_fastmap_pgmbucket, uint32_t);
 INSTANTIATE_TEMPLATES(benchmark_64_fastmap_pgmbucket, uint64_t);
+
 /*
 INSTANTIATE_TEMPLATES(benchmark_32_fastmap_apx, uint32_t);
 INSTANTIATE_TEMPLATES(benchmark_64_fastmap_apx, uint64_t);
