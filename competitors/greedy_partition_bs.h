@@ -74,7 +74,13 @@ class BitwiseBucketIndex : public Competitor {
     bucket_count = (n + error - 1) / error;
     min_key = beg->key;
     max_key = std::prev(end)->key;
-    KeyType bucket_span = (max_key - min_key + bucket_count - 1) / bucket_count;
+    KeyType bucket_span;
+    if (min_key == max_key)
+      bucket_span = 0;
+    else {
+      bucket_span = 1 + (max_key - min_key - 1) / bucket_count;
+      bucket_span = std::min(bucket_span, KeyType(-1) >> 2);
+    }
     bit_shift = 0;
     while ((KeyType(1) << bit_shift) <= bucket_span) {
       ++bit_shift;
