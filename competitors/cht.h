@@ -35,46 +35,21 @@ class CHT : public Competitor {
   std::size_t size() const { return cht_.GetSize(); }
 
   bool applicable(bool _unique, const std::string& data_filename) {
-    // Remove prefix from filename.
-    static constexpr const char* prefix = "data/";
-    std::string dataset = data_filename.data();
-    dataset.erase(dataset.begin(),
-                  dataset.begin() + dataset.find(prefix) + strlen(prefix));
-
-    // Set parameters based on the dataset.
-    return SetParameters(dataset);
+    int s = size_scale % 100;
+    int m = size_scale / 100;
+    // m = 2 -> e = 2
+    // m = 8, s = 4 -> e = 8
+    // m = 8, s = 28 -> e = 20
+    int e = (m - 2) * (s - 4) / 12 + m;
+    num_bins_ = 1 << (s - e);
+    max_error_ = 1 << e;
+    parameters_set_ = true;
+    return true;
   }
 
   int variant() const { return size_scale; }
 
  private:
-  bool SetParameters(const std::string& dataset) {
-    assert(size_scale >= 1 && size_scale <= 10);
-
-    using Config = std::pair<size_t, size_t>;
-    std::vector<Config> configs;
-
-    if (dataset == "books_200M_uint64") {
-      configs = {{128, 512}, {128, 512}, {128, 512}, {128, 512}, {16, 512},
-                 {256, 128}, {64, 64},   {512, 32},  {128, 16},  {1024, 16}};
-    } else if (dataset == "fb_200M_uint64") {
-      configs = {{64, 1024},  {64, 1024}, {64, 1024}, {64, 1024}, {256, 1024},
-                 {1024, 512}, {64, 128},  {512, 128}, {256, 64},  {256, 32}};
-    } else if (dataset == "osm_cellids_200M_uint64") {
-      configs = {{32, 1024}, {32, 1024}, {32, 1024}, {32, 1024}, {32, 512},
-                 {64, 256},  {64, 128},  {64, 32},   {64, 16},   {1024, 16}};
-    } else {
-      // No config.
-      return false;
-    }
-
-    const Config config = configs[size_scale - 1];
-    num_bins_ = config.first;
-    max_error_ = config.second;
-    parameters_set_ = true;
-    return true;
-  }
-
   cht::CompactHistTree<KeyType> cht_;
   size_t num_bins_ = 64;
   size_t max_error_;

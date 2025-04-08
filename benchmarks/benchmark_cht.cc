@@ -4,38 +4,72 @@
 #include "benchmarks/common.h"
 #include "competitors/cht.h"
 
+namespace {
+
+constexpr bool simple_params =
+#ifdef NDEBUG
+false
+#else
+true
+#endif
+;
+
+template <class... Args>
+struct Applier
+{
+  template <class F>
+  static void apply(F f, Args... args)
+  {
+    f(args...);
+  }
+};
+
+template <class T, T... I, class... Args>
+struct Applier<std::integer_sequence<T, I...>, Args...>
+{
+  template <class F>
+  static void apply(F f, std::integer_sequence<T, I...>, Args... args)
+  {
+    (Applier<Args..., std::integral_constant<T, I>>::apply(f, args..., std::integral_constant<T, I>()), ...);
+  }
+};
+
+template <class F, class... Args>
+void apply(F f, Args... args)
+{
+  Applier<Args...>::apply(f, args...);
+}
+
+template <class T, template <typename> typename Searcher, class F, class... Args>
+void benchmark_run_many(sosd::Benchmark<T, Searcher>& benchmark, F f, Args... args) {
+  ::apply([=, &benchmark](auto... a) { benchmark.template Run<CHT<T, f(a...)>>(); }, args...);
+}
+
+template <class T, template <typename> typename Searcher>
+void benchmark_run(sosd::Benchmark<T, Searcher>& benchmark) {
+  auto f = [](auto x, auto y) { return 100 * x + y; };
+  if constexpr (simple_params)
+    benchmark_run_many(benchmark, f,
+      std::integer_sequence<int, 16>{},
+      std::integer_sequence<int, 5>{});
+  else
+    benchmark_run_many(benchmark, f,
+      std::integer_sequence<int, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28>{},
+      std::integer_sequence<int, 2, 3, 4, 5, 6, 7, 8>{});
+}
+
+};
+
 template <template <typename> typename Searcher>
 void benchmark_32_cht(sosd::Benchmark<uint32_t, Searcher>& benchmark,
                       bool pareto) {
-  benchmark.template Run<CHT<uint32_t, 10>>();
-  if (pareto) {
-    benchmark.template Run<CHT<uint32_t, 9>>();
-    benchmark.template Run<CHT<uint32_t, 8>>();
-    benchmark.template Run<CHT<uint32_t, 7>>();
-    benchmark.template Run<CHT<uint32_t, 6>>();
-    benchmark.template Run<CHT<uint32_t, 5>>();
-    benchmark.template Run<CHT<uint32_t, 4>>();
-    benchmark.template Run<CHT<uint32_t, 3>>();
-    benchmark.template Run<CHT<uint32_t, 2>>();
-    benchmark.template Run<CHT<uint32_t, 1>>();
-  }
+  benchmark_run(benchmark);
 }
 
 template <template <typename> typename Searcher>
 void benchmark_64_cht(sosd::Benchmark<uint64_t, Searcher>& benchmark,
                       bool pareto) {
-  benchmark.template Run<CHT<uint64_t, 10>>();
-  if (pareto) {
-    benchmark.template Run<CHT<uint64_t, 9>>();
-    benchmark.template Run<CHT<uint64_t, 8>>();
-    benchmark.template Run<CHT<uint64_t, 7>>();
-    benchmark.template Run<CHT<uint64_t, 6>>();
-    benchmark.template Run<CHT<uint64_t, 5>>();
-    benchmark.template Run<CHT<uint64_t, 4>>();
-    benchmark.template Run<CHT<uint64_t, 3>>();
-    benchmark.template Run<CHT<uint64_t, 2>>();
-    benchmark.template Run<CHT<uint64_t, 1>>();
-  }
+  benchmark_run(benchmark);
 }
 
 INSTANTIATE_TEMPLATES(benchmark_32_cht, uint32_t);
