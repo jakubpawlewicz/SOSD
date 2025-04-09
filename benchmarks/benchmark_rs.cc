@@ -47,7 +47,7 @@ void benchmark_run_many(sosd::Benchmark<T, Searcher>& benchmark, F f, Args... ar
 
 template <class T, template <typename> typename Searcher>
 void benchmark_run(sosd::Benchmark<T, Searcher>& benchmark) {
-  auto f = [](auto x, auto y) { return 100 * x + y; };
+  auto f = [](auto x, auto y) { return 100 * y + x; };
   if constexpr (simple_params)
     benchmark_run_many(benchmark, f,
       std::integer_sequence<int, 16>{},
@@ -55,7 +55,7 @@ void benchmark_run(sosd::Benchmark<T, Searcher>& benchmark) {
   else
     benchmark_run_many(benchmark, f,
       std::integer_sequence<int, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28>{},
-      std::integer_sequence<int, 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20>{});
+      std::integer_sequence<int, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20>{});
 }
 
 };
