@@ -38,9 +38,9 @@ class CHT : public Competitor {
     int s = size_scale % 100;
     int m = size_scale / 100;
     // m = 2 -> e = 2
-    // m = 8, s = 4 -> e = 8
+    // m = 8, s = 10 -> e = 8
     // m = 8, s = 28 -> e = 20
-    int e = (m - 2) * (s - 4) / 12 + m;
+    int e = (m - 2) * (s - 10) / 9 + m;
     num_bins_ = 1 << (s - e);
     max_error_ = 1 << e;
     parameters_set_ = true;
