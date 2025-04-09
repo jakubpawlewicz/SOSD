@@ -51,11 +51,11 @@ void benchmark_run(sosd::Benchmark<T, Searcher>& benchmark) {
   if constexpr (simple_params)
     benchmark_run_many(benchmark, f,
       std::integer_sequence<int, 16>{},
-      std::integer_sequence<int, 5>{});
+      std::integer_sequence<int, 6>{});
   else
     benchmark_run_many(benchmark, f,
       std::integer_sequence<int, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28>{},
-      std::integer_sequence<int, 2, 3, 4, 5, 6, 7, 8>{});
+      std::integer_sequence<int, 4, 5, 6, 7, 8, 9, 10>{});
 }
 
 };

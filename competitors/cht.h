@@ -37,10 +37,10 @@ class CHT : public Competitor {
   bool applicable(bool _unique, const std::string& data_filename) {
     int s = size_scale % 100;
     int m = size_scale / 100;
-    // m = 2 -> e = 2
-    // m = 8, s = 10 -> e = 8
-    // m = 8, s = 28 -> e = 20
-    int e = (m - 2) * (s - 10) / 9 + m;
+    // s = 14 -> e = 4
+    // s = 28, m = 4 -> e = 4
+    // s = 28, m = 10 -> e = 20
+    int e = (m - 4) * (s - 14) * 4 / 21 + 4;
     num_bins_ = 1 << (s - e);
     max_error_ = 1 << e;
     parameters_set_ = true;
