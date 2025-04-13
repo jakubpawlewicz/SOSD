@@ -50,12 +50,12 @@ void benchmark_run(sosd::Benchmark<T, Searcher>& benchmark) {
   auto f = [](auto x, auto y) { return 100 * y + x; };
   if constexpr (simple_params)
     benchmark_run_many(benchmark, f,
-      std::integer_sequence<int, 16>{},
+      std::integer_sequence<int, 10>{},
       std::integer_sequence<int, 6>{});
   else
     benchmark_run_many(benchmark, f,
-      std::integer_sequence<int, 14, 16, 18, 20, 22, 24, 26, 28>{},
-      std::integer_sequence<int, 4, 5, 6, 7, 8, 9, 10>{});
+      std::integer_sequence<int, 4, 5, 6, 7, 8, 9, 10, 11, 12>{},
+      std::integer_sequence<int, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20>{});
 }
 
 };
