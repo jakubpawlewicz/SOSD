@@ -34,13 +34,24 @@ class CHT : public Competitor {
 
   std::size_t size() const { return cht_.GetSize(); }
 
-  bool applicable(bool _unique, const std::string& data_filename) {
+  constexpr static bool need_data = true;
+
+  bool applicable(bool _unique, const std::vector<KeyValue<KeyType>>& data) {
     int m = size_scale % 100;
     int e = size_scale / 100;
     num_bins_ = 1 << m;
     max_error_ = 1 << e;
     parameters_set_ = true;
-    return m <= e + 4;
+    auto min = std::numeric_limits<KeyType>::min();
+    auto max = std::numeric_limits<KeyType>::max();
+    if (data.size() > 0) {
+      min = data.front().key;
+      max = data.back().key;
+    }
+    cht::Builder<KeyType> chtb(min, max, num_bins_, max_error_,
+      /*single_pass=*/false, /*use_cache=*/false);
+    for (const auto& key_and_value : data) chtb.AddKey(key_and_value.key);
+    return chtb.CheckFeasible(1 << 30);
   }
 
   int variant() const { return size_scale; }

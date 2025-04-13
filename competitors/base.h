@@ -4,6 +4,8 @@
 
 class Competitor {
  public:
+  constexpr static bool need_data = false;
+
   bool applicable(bool _unique, const std::string& data_filename) const {
     return true;
   }

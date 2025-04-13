@@ -102,7 +102,12 @@ class Benchmark {
     // Build index.
     Index index;
 
-    if (!index.applicable(unique_keys_, data_filename_)) {
+    bool applicable;
+    if constexpr (Index::need_data)
+      applicable = index.applicable(unique_keys_, index_data_);
+    else
+      applicable = index.applicable(unique_keys_, data_filename_);
+    if (!applicable) {
       std::cout << "index " << index.name() << " is not applicable"
                 << std::endl;
       return;
