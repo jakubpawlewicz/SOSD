@@ -21,7 +21,7 @@
 	url = git@github.com:jakubpawlewicz/ALEX.git
 [submodule "competitors/CHT"]
 	path = competitors/CHT
-	url = https://github.com/stoianmihail/CHT.git
+	url = git@github.com:jakubpawlewicz/CHT.git
 [submodule "competitors/ts"]
 	path = competitors/ts
 	url = https://github.com/stoianmihail/TrieSpline.git
