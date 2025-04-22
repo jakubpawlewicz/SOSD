@@ -5,7 +5,7 @@ if(UNIX AND NOT APPLE)
     set(LINUX TRUE)
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math -Wall -Wfatal-errors -march=native")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math -Wall -Wfatal-errors -march=native -DflagUSEMALLOC")
 
 # Enable OpenMP if available
 include(CheckCXXCompilerFlag)
@@ -53,7 +53,7 @@ add_custom_target(
 
 add_custom_target(
         FastMap
-        COMMAND umk ${CMAKE_SOURCE_DIR}/fastmap,${CMAKE_SOURCE_DIR}/ultimatepp/uppsrc FastMap ${CMAKE_SOURCE_DIR}/libfastmap/GCC.bm -r +MAKE_LIB,SHARED ${CMAKE_SOURCE_DIR}/libfastmap
+        COMMAND umk ${CMAKE_SOURCE_DIR}/fastmap,${CMAKE_SOURCE_DIR}/ultimatepp/uppsrc FastMap ${CMAKE_SOURCE_DIR}/libfastmap/GCC.bm -r +MAKE_LIB,SHARED,USEMALLOC ${CMAKE_SOURCE_DIR}/libfastmap
 )
 
 if (${LINUX})
